@@ -1,0 +1,25 @@
+# Secrets — never commit. API keys live in the environment / .env only.
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Nova runtime data (durable but local; backed up off-machine per Tier 4 policy)
+memory/store.json
+memory/store.json.bak
+data/
+*.log
+audit/
+audio/
+*.wav
+*.mp3
+
+# OS
+.DS_Store

@@ -1,0 +1,65 @@
+# Nova configuration — config over hardcoding.
+# Thresholds, intervals, quiet hours, model names, which tools are consequential,
+# spending ceiling: all live here, never in code.
+
+[identity]
+name = "Nova"
+# Playful and casual, still brief. The full system prompt is assembled in core.
+tone = "playful, casual, warm, brief"
+
+[model]
+# Thin seam in core/llm.py is the ONLY thing that touches a provider SDK.
+provider = "anthropic"
+primary = "claude-opus-4-8"
+# Used when the primary is genuinely down (not just slow). A cheaper/secondary
+# Claude model by default; a different vendor can be slotted behind the same seam.
+fallback = "claude-haiku-4-5-20251001"
+max_tokens = 1024
+temperature = 0.7
+
+[context]
+# Crude-but-real context-budget strategy so the window can't silently overflow
+# once the heartbeat (Tier 5) runs unattended for hours.
+# When stored turns exceed max_turns, the oldest are trimmed (Tier 1) — upgrade
+# to summarization later without touching callers.
+max_turns = 20
+strategy = "trim"   # "trim" | "summarize" (summarize lands in a later pass)
+
+[safety]
+# The Tier 0 "never without asking" list. Tools matching these intents are
+# consequential and must pass the confirmation gate. Hardened in Tier 6.
+consequential_intents = ["send", "spend", "delete", "change_settings"]
+# Dry-run: consequential tools LOG what they would do instead of doing it.
+# Keep true while developing Tiers 2–6 so no real messages/money go out.
+dry_run = true
+# Cap retries on a failing tool call before giving up cleanly (Tier 2).
+max_tool_retries = 3
+# Per-tool-call timeout in seconds so one hanging call can't freeze a turn.
+tool_timeout_seconds = 30
+
+# --- The following sections are placeholders the later tiers read from. ---
+
+[voice]
+# Tier 3. Push-to-talk first. Providers confirmed in Tier 0.
+mode = "push_to_talk"      # "push_to_talk" | "open_mic" (open_mic needs a consent policy first)
+stt_provider = "deepgram"
+tts_provider = "elevenlabs"
+
+[heartbeat]
+# Tier 5. Quiet by default — it earns interruptions.
+enabled = false            # flipped on in Tier 5
+quiet_hours_start = "22:00"
+quiet_hours_end = "08:00"
+approval_timeout_seconds = 1800   # background actions awaiting approval -> "do nothing, leave a note"
+notify_channel = "sms"
+sms_provider = "twilio"
+
+# Per-check model choice: cheap classification vs real reasoning. Cost discipline.
+[heartbeat.checks.daily_digest]
+schedule = "0 8 * * *"     # 08:00 daily
+model = "claude-haiku-4-5-20251001"   # pure summarization — cheap model
+
+[budget]
+# Tier 6. Spending ceiling that HALTS non-essential activity and alerts, not just
+# a log read after the damage is done.
+ceiling_usd = 10.0

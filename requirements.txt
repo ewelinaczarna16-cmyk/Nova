@@ -1,0 +1,6 @@
+# Tier 1 — the brain. Kept deliberately minimal.
+anthropic>=0.40.0
+
+# Stdlib covers the rest for now (tomllib for config, json for memory).
+# Voice (Tier 3), Twilio (Tier 5) deps get added when those tiers land, so the
+# core stays installable and testable without audio/SMS accounts.
