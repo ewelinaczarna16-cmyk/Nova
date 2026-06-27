@@ -1,11 +1,22 @@
-"""Nova entry point. For now: the text REPL (the brain + hands).
+"""Nova entry point.
 
-    python main.py
+    python main.py            # text REPL (the brain + hands) — always available
+    python main.py --voice    # push-to-talk voice (laptop: needs mic/speakers + keys)
 
-Voice, memory, and heartbeat tiers add their own entry points / flags later, all
-wrapping the same core Agent.
+Voice wraps the SAME core Agent; the text REPL is never replaced — it's the
+permanent debug path and fallback.
 """
-from core.cli import main
+import sys
+
+
+def main() -> None:
+    if "--voice" in sys.argv[1:]:
+        from voice.cli import main as voice_main
+        voice_main()
+    else:
+        from core.cli import main as text_main
+        text_main()
+
 
 if __name__ == "__main__":
     main()

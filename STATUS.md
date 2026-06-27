@@ -25,3 +25,4 @@ panel, an always-on host) is **post-v1**. Ship first.
 - Tier 0 done, 2026-06-27 — interview complete, `AGENT.md` written.
 - Tier 1 done, 2026-06-27 — streaming text loop with LLM seam, fallback, context budget.
 - Tier 2 done, 2026-06-27 — tool registry + safe/consequential gate + dry-run + retries/timeouts.
+- Tier 3 built, 2026-06-27 — voice seams (Deepgram STT / ElevenLabs TTS) + push-to-talk loop wrapping the same brain + spoken confirmation gate. Tested with fakes; awaiting live laptop run (needs mic/speakers + ElevenLabs key + open network).

@@ -106,7 +106,7 @@ classification (cheap model). Never default every scheduled check to the top mod
 - **Tier 0 — Interview:** ✅ done 2026-06-27. Answers above, `AGENT.md` written.
 - **Tier 1 — Brain:** ✅ done 2026-06-27. Streaming text loop, LLM seam + fallback, context budget.
 - **Tier 2 — Hands + safety stub:** ✅ done 2026-06-27. Tool registry, safe/consequential gate, dry-run, retries/timeouts.
-- **Tier 3 — Voice:** ⬜ not started.
+- **Tier 3 — Voice:** 🟡 built 2026-06-27 — STT/TTS seams (Deepgram/ElevenLabs), push-to-talk loop wrapping the same brain, spoken confirmation gate, `--voice` entry point, 5 wiring tests pass with fakes. **Pending live verification on a laptop** (cloud build env blocks Deepgram/ElevenLabs and has no mic/speakers). Deepgram key stored in git-ignored `.env`; ElevenLabs key still needed.
 - **Tier 4 — Memory:** ⬜ not started.
 - **Tier 5 — Heartbeat:** ⬜ not started.
 - **Tier 6 — Rails (hardened):** ⬜ not started.
