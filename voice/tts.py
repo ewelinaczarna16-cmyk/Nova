@@ -28,10 +28,11 @@ class ElevenLabsSpeaker:
 
     BASE = "https://api.elevenlabs.io/v1/text-to-speech"
 
-    def __init__(self, api_key: str | None = None, voice_id: str = "Rachel",
+    def __init__(self, api_key: str | None = None, voice_id: str | None = None,
                  model: str = "eleven_turbo_v2_5"):
         self._api_key = api_key or os.environ.get("ELEVENLABS_API_KEY")
-        self._voice_id = voice_id
+        # Voice id from env (ELEVENLABS_VOICE_ID) so it's configurable, not baked in.
+        self._voice_id = voice_id or os.environ.get("ELEVENLABS_VOICE_ID", "Rachel")
         self._model = model
         self._stopped = False
 
