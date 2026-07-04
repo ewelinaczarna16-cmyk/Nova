@@ -7,9 +7,11 @@ mic, speakers, and reachable Deepgram/ElevenLabs); the typed CLI stays as fallba
 from __future__ import annotations
 
 from core.agent import Agent
+from memory import MemoryStore
 from safety import ConfirmationGate, Decision
 from tools import ToolRegistry
 from tools.builtin import register_builtin_tools
+from tools.memory_tools import register_memory_tools
 
 from .audio import record_ptt
 from .session import VoiceSession
@@ -31,8 +33,10 @@ def build_voice_session() -> tuple[VoiceSession, "callable"]:
 
     registry = ToolRegistry()
     register_builtin_tools(registry)
+    store = MemoryStore()
+    register_memory_tools(registry, store)
     gate = ConfirmationGate(approver=voice_approver)
-    agent = Agent(tools=registry, gate=gate)
+    agent = Agent(tools=registry, gate=gate, memory=store)
     return VoiceSession(agent=agent, transcriber=transcriber, speaker=speaker), record_ptt
 
 

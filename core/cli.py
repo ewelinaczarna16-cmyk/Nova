@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import sys
 
+from memory import MemoryStore
 from safety import ConfirmationGate, Decision
 from tools import ToolRegistry
 from tools.builtin import register_builtin_tools
+from tools.memory_tools import register_memory_tools
 
 from .agent import Agent
 
@@ -24,8 +26,10 @@ def _stdin_approver(description: str) -> Decision:
 def build_agent() -> Agent:
     registry = ToolRegistry()
     register_builtin_tools(registry)
+    store = MemoryStore()                       # loads durable facts from disk
+    register_memory_tools(registry, store)
     gate = ConfirmationGate(approver=_stdin_approver)
-    return Agent(tools=registry, gate=gate)
+    return Agent(tools=registry, gate=gate, memory=store)
 
 
 def main() -> None:

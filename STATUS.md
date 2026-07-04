@@ -26,3 +26,4 @@ panel, an always-on host) is **post-v1**. Ship first.
 - Tier 1 done, 2026-06-27 — streaming text loop with LLM seam, fallback, context budget.
 - Tier 2 done, 2026-06-27 — tool registry + safe/consequential gate + dry-run + retries/timeouts.
 - Tier 3 built, 2026-06-27 — voice seams (Deepgram STT / ElevenLabs TTS) + push-to-talk loop wrapping the same brain + spoken confirmation gate. Tested with fakes; awaiting live laptop run (needs mic/speakers + ElevenLabs key + open network).
+- Tier 4 done, 2026-07-04 — durable memory: facts survive restart, hand-editable, injected as background data, live-correction tools. Unblocks the "remembers three facts about me" v1 bar.

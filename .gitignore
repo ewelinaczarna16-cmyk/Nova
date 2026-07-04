@@ -13,7 +13,7 @@ venv/
 
 # Nova runtime data (durable but local; backed up off-machine per Tier 4 policy)
 memory/store.json
-memory/store.json.bak
+memory/store.json.*
 data/
 *.log
 audit/
