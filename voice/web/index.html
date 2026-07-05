@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova — voice</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 0 auto;
+         padding: 2rem 1rem; line-height: 1.5; }
+  h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+  .sub { opacity: .6; font-size: .9rem; margin-bottom: 1.5rem; }
+  #talk { width: 100%; padding: 1.5rem; font-size: 1.2rem; border: none; border-radius: 1rem;
+          background: #4f46e5; color: #fff; cursor: pointer; user-select: none; touch-action: none; }
+  #talk.rec { background: #dc2626; }
+  #talk:disabled { opacity: .5; cursor: default; }
+  #status { text-align: center; min-height: 1.4em; margin: .75rem 0; opacity: .8; font-size: .95rem; }
+  .turn { border-radius: .75rem; padding: .75rem 1rem; margin: .75rem 0; }
+  .you  { background: rgba(127,127,127,.12); }
+  .nova { background: rgba(79,70,229,.12); }
+  .who  { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; opacity: .55; margin-bottom: .2rem; }
+</style>
+</head>
+<body>
+  <h1>🎙️ Nova</h1>
+  <div class="sub">Hold the button, talk, let go. The typed interface is still your fallback.</div>
+  <button id="talk">Hold to talk</button>
+  <div id="status">Tap the button — Chrome will ask to use your mic.</div>
+  <div id="log"></div>
+
+<script>
+const btn = document.getElementById('talk');
+const statusEl = document.getElementById('status');
+const log = document.getElementById('log');
+let media, chunks = [], recording = false;
+
+function setStatus(t){ statusEl.textContent = t; }
+function addTurn(who, cls, text){
+  const d = document.createElement('div');
+  d.className = 'turn ' + cls;
+  d.innerHTML = '<div class="who">'+who+'</div>' + text.replace(/</g,'&lt;');
+  log.prepend(d);
+  return d;
+}
+
+async function ensureMic(){
+  if (media) return;
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  media = new MediaRecorder(stream, { mimeType: pickType() });
+  media.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  media.onstop = sendTurn;
+}
+function pickType(){
+  for (const t of ['audio/webm;codecs=opus','audio/webm','audio/ogg']) {
+    if (MediaRecorder.isTypeSupported(t)) return t;
+  }
+  return '';
+}
+
+async function start(){
+  try { await ensureMic(); }
+  catch (e){ setStatus('Mic blocked — allow it in Chrome and reload. ('+e.message+')'); return; }
+  chunks = []; recording = true;
+  btn.classList.add('rec'); btn.textContent = 'Listening… (let go to send)';
+  setStatus('listening…');
+  media.start();
+}
+function stop(){
+  if (!recording) return;
+  recording = false;
+  btn.classList.remove('rec'); btn.textContent = 'Hold to talk';
+  media.stop();
+}
+
+async function sendTurn(){
+  setStatus('…heard you, thinking…');
+  btn.disabled = true;
+  const blob = new Blob(chunks, { type: media.mimeType });
+  try {
+    const res = await fetch('/turn', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/octet-stream', 'X-Audio-Type': media.mimeType },
+      body: blob,
+    });
+    const data = await res.json();
+    if (data.transcript) addTurn('you (heard)', 'you', data.transcript);
+    addTurn('nova', 'nova', data.reply || '(no reply)');
+    setStatus('your turn');
+    if (data.audio_b64) {
+      const audio = new Audio('data:audio/mpeg;base64,' + data.audio_b64);
+      audio.play().catch(()=>{});
+    }
+  } catch (e){
+    setStatus('Something went wrong talking to Nova: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Push-to-talk: hold with mouse or touch.
+btn.addEventListener('mousedown', start);
+btn.addEventListener('mouseup', stop);
+btn.addEventListener('mouseleave', () => recording && stop());
+btn.addEventListener('touchstart', e => { e.preventDefault(); start(); });
+btn.addEventListener('touchend',   e => { e.preventDefault(); stop();  });
+</script>
+</body>
+</html>

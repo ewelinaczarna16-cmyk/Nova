@@ -1,6 +1,12 @@
 # Tier 3 voice extras. Kept separate so the core stays installable/testable without
-# audio hardware or these libs. Install on your laptop:  pip install -r requirements-voice.txt
+# audio hardware or these libs.
+#
+# BROWSER voice (python main.py --serve) — Chromebook-friendly, mic is handled by
+# Chrome — needs ONLY this:
 requests>=2.31.0      # Deepgram + ElevenLabs REST calls
+#
+# NATIVE voice (python main.py --voice) — captures the mic directly via PortAudio —
+# additionally needs these (skip them if you're using the browser mode):
 sounddevice>=0.4.6    # mic capture + speaker playback (needs PortAudio)
 soundfile>=0.12.1     # WAV/MP3 encode/decode
 numpy>=1.24           # audio buffers

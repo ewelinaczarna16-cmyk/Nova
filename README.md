@@ -14,9 +14,10 @@ safety gate that exists from the moment tools exist.
   swappable LLM seam (`core/llm.py`), primary→fallback handling, and a context budget.
 - ✅ **Tier 2** — the hands + safety stub: a tool registry (`tools/`), a
   safe/consequential confirmation gate (`safety/`), dry-run, retries, and timeouts.
-- 🟡 **Tier 3** — the ears/mouth: STT/TTS seams + push-to-talk wrapping the same
-  brain (`voice/`). Coded and unit-tested with fakes; needs a laptop (mic + open
-  network) for live verification.
+- 🟡 **Tier 3** — the ears/mouth: STT/TTS seams wrapping the same brain (`voice/`),
+  with two front-ends — native push-to-talk (`--voice`) and a **browser voice UI
+  (`--serve`)** for Chromebooks/anywhere Chrome runs. Coded and unit-tested with
+  fakes; needs the user's machine (mic + open network) for live verification.
 - ✅ **Tier 4** — the memory: a durable, hand-editable fact store (`memory/`) that
   survives restart, injected each turn as background data, with live-correction tools.
 - ⬜ Tiers 5–6 (heartbeat, hardened rails) — scaffolded, not built.

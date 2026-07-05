@@ -27,3 +27,4 @@ panel, an always-on host) is **post-v1**. Ship first.
 - Tier 2 done, 2026-06-27 — tool registry + safe/consequential gate + dry-run + retries/timeouts.
 - Tier 3 built, 2026-06-27 — voice seams (Deepgram STT / ElevenLabs TTS) + push-to-talk loop wrapping the same brain + spoken confirmation gate. Tested with fakes; awaiting live laptop run (needs mic/speakers + ElevenLabs key + open network).
 - Tier 4 done, 2026-07-04 — durable memory: facts survive restart, hand-editable, injected as background data, live-correction tools. Unblocks the "remembers three facts about me" v1 bar.
+- Tier 3 browser mode added, 2026-07-05 — `python main.py --serve` gives a Chrome mic UI wrapping the same brain (chosen path since user is on a Chromebook; native PortAudio mic is impractical there). Tested with fakes; live run pending the user's Crostini + Anthropic key setup.
