@@ -47,17 +47,24 @@ tts_provider = "elevenlabs"
 
 [heartbeat]
 # Tier 5. Quiet by default — it earns interruptions.
-enabled = false            # flipped on in Tier 5
-quiet_hours_start = "22:00"
+enabled = true             # the loop runs; individual checks gate themselves below
+tick_seconds = 30          # how often the background loop wakes to see what's due
+quiet_hours_start = "22:00" # HOLD notices during these hours; deliver when they end
 quiet_hours_end = "08:00"
 approval_timeout_seconds = 1800   # background actions awaiting approval -> "do nothing, leave a note"
 notify_channel = "sms"
 sms_provider = "twilio"
+# Log the SMS instead of sending it, until Twilio creds are in .env. Flip to false
+# on your machine once TWILIO_* + NOTIFY_TO_NUMBER are set.
+dry_run = true
 
-# Per-check model choice: cheap classification vs real reasoning. Cost discipline.
+# Per-check config. `model = "none"` means no LLM spend (deterministic). Cost discipline:
+# reserve a real model only for checks that need reasoning.
 [heartbeat.checks.daily_digest]
-schedule = "0 8 * * *"     # 08:00 daily
-model = "claude-haiku-4-5-20251001"   # pure summarization — cheap model
+type = "daily_digest"      # the first check — proves the channel end to end
+at = "08:00"               # once a day at this local time
+model = "none"             # built deterministically from calendar + reminders
+enabled = true
 
 [budget]
 # Tier 6. Spending ceiling that HALTS non-essential activity and alerts, not just

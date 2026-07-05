@@ -20,7 +20,11 @@ safety gate that exists from the moment tools exist.
   fakes; needs the user's machine (mic + open network) for live verification.
 - ✅ **Tier 4** — the memory: a durable, hand-editable fact store (`memory/`) that
   survives restart, injected each turn as background data, with live-correction tools.
-- ⬜ Tiers 5–6 (heartbeat, hardened rails) — scaffolded, not built.
+- ✅ **Tier 5** — the heartbeat: a background loop (`heartbeat/`) with config-driven
+  checks, restart-safe scheduling, quiet hours, held/dismissible SMS notices, and
+  gated background actions. Daily digest is the first check (`python main.py
+  --digest-now`). SMS is dry-run until you add Twilio creds.
+- ⬜ Tier 6 (hardened rails) — scaffolded, not built.
 
 ## Run it (text mode)
 

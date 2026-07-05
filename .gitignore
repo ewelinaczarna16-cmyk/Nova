@@ -14,6 +14,8 @@ venv/
 # Nova runtime data (durable but local; backed up off-machine per Tier 4 policy)
 memory/store.json
 memory/store.json.*
+heartbeat/state.json
+heartbeat/state.json.*
 data/
 *.log
 audit/
